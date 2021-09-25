@@ -1,2 +1,4 @@
 <script>import "../app.postcss";</script>
-<slot></slot>
+<div class="container mx-auto px-4">
+    <slot></slot>
+</div>
