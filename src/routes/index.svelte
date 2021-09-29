@@ -60,7 +60,7 @@
 			<p>...waiting</p>
 		{:then data}
 			{#each data as { id, title, body }}
-				<div class="card bordered shadow-2xl text-center mb-20">
+				<div class="card bordered shadow-2xl mb-20">
 					<div class="badge badge-ghost">topic</div>
 					<figure class="flex px-10 pt-10">
 						<img
