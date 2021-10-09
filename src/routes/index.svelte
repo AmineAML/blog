@@ -1,5 +1,6 @@
 <script>
 	import { onMount } from 'svelte';
+import { each } from 'svelte/internal';
 
 	// filter posts by keyword either that by a user or by topics
 	var searched = 'example';
@@ -7,15 +8,59 @@
 
 	let blogPosts;
 
+	const months = [
+		'January',
+		'February',
+		'March',
+		'April',
+		'May',
+		'June',
+		'July',
+		'August',
+		'September',
+		'October',
+		'November',
+		'December'
+	];
+
 	onMount(async () => {
-		const res = await fetch('https://jsonplaceholder.typicode.com/posts');
-		blogPosts = await res.json();
-		console.log(blogPosts[0]);
+		// const res = await fetch('https://jsonplaceholder.typicode.com/posts');
+		// blogPosts = await res.json();
+		// console.log(blogPosts[0]);
 	});
 
 	const fetchPosts = (async () => {
-		const response = await fetch('https://jsonplaceholder.typicode.com/posts');
-		return await response.json();
+		const response = await self.fetch('http://localhost:1337/articles');
+
+		if (response.ok) {
+			return response.json();
+		} else {
+			console.log(response);
+			throw new Error("Error on fetching blog posts, check the logs.");
+		}
+	})();
+
+	const formatDate = (date) => {
+		var d = new Date(date);
+
+		const month = months[d.getMonth()];
+
+		const day = d.getDate();
+
+		const year = d.getFullYear();
+
+		return `${month} ${day}, ${year}`;
+	};
+
+	const fetchTopics = (async () => {
+		const response = await self.fetch('http://localhost:1337/topics');
+
+		if (response.ok) {
+			return response.json();
+		} else {
+			console.log(response);
+			throw new Error("Error on fetching topics, check the logs.");
+		}
 	})();
 </script>
 
@@ -76,26 +121,15 @@
 			</a>
 		</div>
 		<div class="flex justify-center flex-wrap">
-			<button class="badge mx-2 my-2">topic</button>
-			<button class="badge mx-2 my-2">topic</button>
-			<button class="badge mx-2 my-2">topic</button>
-			<button class="badge mx-2 my-2">topic</button>
-			<button class="badge mx-2 my-2">topic</button>
-			<button class="badge mx-2 my-2">topic</button>
-			<button class="badge mx-2 my-2">topic</button>
-			<button class="badge mx-2 my-2">topic</button>
-			<button class="badge mx-2 my-2">topic</button>
-			<button class="badge mx-2 my-2">topic</button>
-			<button class="badge mx-2 my-2">topic</button>
-			<button class="badge mx-2 my-2">topic</button>
-			<button class="badge mx-2 my-2">topic</button>
-			<button class="badge mx-2 my-2">topic</button>
-			<button class="badge mx-2 my-2">topic</button>
-			<button class="badge mx-2 my-2">topic</button>
-			<button class="badge mx-2 my-2">topic</button>
-			<button class="badge mx-2 my-2">topic</button>
-			<button class="badge mx-2 my-2">topic</button>
-			<button class="badge mx-2 my-2">topic</button>
+			{#await fetchTopics}
+			<button class="badge mx-2 my-2">Loading</button>
+			{:then data}
+				{#each data as { name }}
+					<button class="badge mx-2 my-2">{name}</button>
+				{/each}
+			{:catch error}
+				<p>{error}</p>
+			{/await}
 		</div>
 		<div class="divider" />
 		<div class="form-control py-3 mx-auto w-full">
@@ -112,34 +146,37 @@
 		{#await fetchPosts}
 			<p>...waiting</p>
 		{:then data}
-			{#each data as { id, title, body }}
+			{#each data as { id, title, topics, published_at, author, description, slug, image }}
 				<div class="card bordered shadow-2xl mb-20">
 					<div class="flex space-x-2 flex-wrap">
-						<div class="badge badge-ghost mx-2 my-2">topic</div>
+						{#each topics as { name }}
+							<div class="badge badge-ghost mx-2 my-2">{name}</div>
+						{/each}
 					</div>
 					<figure class="flex px-10 pt-10">
 						<img
-							src="https://www.artza-technologies.com/img/manageProjectsPage/gestion-projets.png"
+							src={"http://localhost:1337" + image.formats.thumbnail.url}
 							class="w-full"
 							alt="blog post"
 						/>
 					</figure>
 					<div class="card-body">
-						<div class="flex space-x-2">
-							<p>September 22, 2021</p>
+						<div class="flex space-x-1">
+							<p>Posted on</p>
+							<p>{formatDate(published_at)}</p>
 							<p>by</p>
-							<p>Amine Amellouk</p>
+							<p>{author.name}</p>
 						</div>
 						<h2 class="card-title">{title}</h2>
-						<p>{body}</p>
+						<p>{description}</p>
 						<div class="card-actions">
-							<a href="/posts/{id}" class="text-gray-500">read more</a>
+							<a href="/posts/{slug}" class="text-gray-500">read more</a>
 						</div>
 					</div>
 				</div>
 			{/each}
 		{:catch error}
-			<p>An error occurred!</p>
+			<p>{error}</p>
 		{/await}
 	</div>
 </section>
