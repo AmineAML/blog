@@ -1,5 +1,8 @@
 <script>
 	import { page } from '$app/stores';
+	import marked from 'marked';
+
+	let _md = marked;
 
 	var slug = $page.params.slug;
 
@@ -21,7 +24,7 @@
 	];
 
 	const fetchPost = (async () => {
-		const response = await self.fetch(`http://localhost:1337/articles/${slug}`);
+		const response = await fetch(`http://localhost:1337/articles/${slug}`);
 
 		if (response.ok) {
 			return response.json();
@@ -42,6 +45,8 @@
 
 		return `${month} ${day}, ${year}`;
 	};
+
+	let markdown = '# Ree'
 </script>
 
 <section>
@@ -52,7 +57,7 @@
 			<h1 class="text-4xl mb-10 font-bold mx-auto">{post.title}</h1>
 			<figure class="flex px-10 pt-10 flex-col">
 				<img
-					src={'http://localhost:1337' + post.image.formats.large.url}
+					src={'http://localhost:1337' + post.image.formats.medium.url}
 					class="w-full"
 					alt="blog post"
 				/>
@@ -73,7 +78,21 @@
 				<p>{post.author.name}</p>
 			</div>
 			<div class="divider" />
-			<html>{post.content}</html>
+			<div class="prose">
+				{@html _md(post.content)}
+			</div>
+			<div class="flex mx-auto pt-10">Quote of the post</div>
+			<div class="w-full mb-10">
+				<div class="text-3xl text-left leading-tight h-3 text-gray-600">“</div>
+				<p class="text-sm text-gray-600 text-center px-5">
+					Lorem, ipsum dolor sit amet consectetur adipisicing elit. Nam obcaecati laudantium
+					recusandae, debitis eum voluptatem ad, illo voluptatibus temporibus odio provident.
+				</p>
+				<div class="text-3xl text-right leading-tight h-3 -mt-3 text-gray-600">”</div>
+			</div>
+			<div class="w-full">
+				<p class="text-md font-bold text-center text-gray-600">- Scott Windon</p>
+			</div>
 			<div class="divider" />
 			<div class="card shadow">
 				<div class="card-body">
@@ -142,7 +161,7 @@
 					<div class="avatar m-auto">
 						<div class="mb-8 rounded-full w-24 h-24">
 							<img
-								src={"http://localhost:1337" + post.author.picture.formats.large.url}
+								src={'http://localhost:1337' + post.author.picture.formats.small.url}
 								alt="author avatar"
 							/>
 						</div>
@@ -183,7 +202,7 @@
 								/>
 							</svg>
 						</a>
-						<a href={"mailto:" + post.author.email}>
+						<a href={'mailto:' + post.author.email}>
 							<svg
 								xmlns="http://www.w3.org/2000/svg"
 								class="h-6 w-6"

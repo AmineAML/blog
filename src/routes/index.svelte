@@ -30,7 +30,7 @@ import { each } from 'svelte/internal';
 	});
 
 	const fetchPosts = (async () => {
-		const response = await self.fetch('http://localhost:1337/articles');
+		const response = await fetch('http://localhost:1337/articles');
 
 		if (response.ok) {
 			return response.json();
@@ -53,7 +53,7 @@ import { each } from 'svelte/internal';
 	};
 
 	const fetchTopics = (async () => {
-		const response = await self.fetch('http://localhost:1337/topics');
+		const response = await fetch('http://localhost:1337/topics');
 
 		if (response.ok) {
 			return response.json();
@@ -146,7 +146,7 @@ import { each } from 'svelte/internal';
 		{#await fetchPosts}
 			<p>...waiting</p>
 		{:then data}
-			{#each data as { id, title, topics, published_at, author, description, slug, image }}
+			{#each [...data].reverse() as { id, title, topics, published_at, author, description, slug, image }}
 				<div class="card bordered shadow-2xl mb-20">
 					<div class="flex space-x-2 flex-wrap">
 						{#each topics as { name }}
@@ -155,9 +155,9 @@ import { each } from 'svelte/internal';
 					</div>
 					<figure class="flex px-10 pt-10">
 						<img
-							src={"http://localhost:1337" + image.formats.thumbnail.url}
-							class="w-full"
+							src={"http://localhost:1337" + image.formats.medium.url}
 							alt="blog post"
+							class="w-full h-full"
 						/>
 					</figure>
 					<div class="card-body">
