@@ -7,7 +7,7 @@
 			<span class="mx-auto">About Amine Amellouk</span>
 		</h2>
 		<div class="float-right">
-			<img class="w-60 h-60 p-2" src="static/avatar.jpg" alt="author avatar" />
+			<img class="w-60 h-60 p-2" src="/avatar.jpg" alt="author avatar" />
 			<div class="flex space-x-2 p-2 justify-center">
 				<a href="https://www.amineamellouk.com">
 					<svg

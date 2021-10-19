@@ -1,6 +1,7 @@
 <script>
 	import { page } from '$app/stores';
 	import marked from 'marked';
+	import { variables } from '$lib/variables'
 
 	let _md = marked;
 
@@ -24,7 +25,7 @@
 	];
 
 	const fetchPost = (async () => {
-		const response = await fetch(`http://localhost:1337/articles/${slug}`);
+		const response = await fetch(variables.api + `/articles/${slug}`);
 
 		if (response.ok) {
 			return response.json();
@@ -55,14 +56,14 @@
 			<button class="badge mx-2 my-2">Loading</button>
 		{:then post}
 			<h1 class="text-4xl mb-10 font-bold mx-auto">{post.title}</h1>
-			<figure class="flex px-10 pt-10 flex-col">
+			<figure class="flex flex-col">
 				<img
-					src={'http://localhost:1337' + post.image.formats.medium.url}
+					src={post.image.formats.medium.url}
 					class="w-full"
 					alt="blog post"
 				/>
 				<figcaption class="font-medium">
-					<div class="text-gray-500 text-center text-xs">Source Copyrights</div>
+					<div class="text-gray-500 text-center text-xs">{post.image_source}</div>
 				</figcaption>
 			</figure>
 			<div />
@@ -84,14 +85,11 @@
 			<div class="flex mx-auto pt-10">Quote of the post</div>
 			<div class="w-full mb-10">
 				<div class="text-3xl text-left leading-tight h-3 text-gray-600">“</div>
-				<p class="text-sm text-gray-600 text-center px-5">
-					Lorem, ipsum dolor sit amet consectetur adipisicing elit. Nam obcaecati laudantium
-					recusandae, debitis eum voluptatem ad, illo voluptatibus temporibus odio provident.
-				</p>
+				<p class="text-sm text-gray-600 text-center px-5">{post.quote}</p>
 				<div class="text-3xl text-right leading-tight h-3 -mt-3 text-gray-600">”</div>
 			</div>
 			<div class="w-full">
-				<p class="text-md font-bold text-center text-gray-600">- Scott Windon</p>
+				<p class="text-md font-bold text-center text-gray-600">- {post.quote_by}</p>
 			</div>
 			<div class="divider" />
 			<div class="card shadow">
@@ -161,7 +159,7 @@
 					<div class="avatar m-auto">
 						<div class="mb-8 rounded-full w-24 h-24">
 							<img
-								src={'http://localhost:1337' + post.author.picture.formats.small.url}
+								src={post.author.picture.formats.small.url}
 								alt="author avatar"
 							/>
 						</div>

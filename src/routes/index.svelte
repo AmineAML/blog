@@ -1,6 +1,6 @@
 <script>
 	import { onMount } from 'svelte';
-import { each } from 'svelte/internal';
+	import { variables } from '$lib/variables'
 
 	// filter posts by keyword either that by a user or by topics
 	var searched = 'example';
@@ -30,7 +30,7 @@ import { each } from 'svelte/internal';
 	});
 
 	const fetchPosts = (async () => {
-		const response = await fetch('http://localhost:1337/articles');
+		const response = await fetch(variables.api + '/articles');
 
 		if (response.ok) {
 			return response.json();
@@ -53,7 +53,7 @@ import { each } from 'svelte/internal';
 	};
 
 	const fetchTopics = (async () => {
-		const response = await fetch('http://localhost:1337/topics');
+		const response = await fetch(variables.api + '/topics');
 
 		if (response.ok) {
 			return response.json();
@@ -153,9 +153,9 @@ import { each } from 'svelte/internal';
 							<div class="badge badge-ghost mx-2 my-2">{name}</div>
 						{/each}
 					</div>
-					<figure class="flex px-10 pt-10">
+					<figure class="flex">
 						<img
-							src={"http://localhost:1337" + image.formats.medium.url}
+							src={image.formats.medium.url}
 							alt="blog post"
 							class="w-full h-full"
 						/>
