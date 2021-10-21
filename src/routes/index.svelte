@@ -1,3 +1,9 @@
+<script context="module">
+	
+	export const prerender = true;
+
+</script>
+
 <script>
 	import { onMount } from 'svelte';
 	import { variables } from '$lib/variables'
@@ -170,7 +176,7 @@
 						<h2 class="card-title">{title}</h2>
 						<p>{description}</p>
 						<div class="card-actions">
-							<a href="/posts/{slug}" class="text-gray-500">read more</a>
+							<a sveltekit:prefetch href="/posts/{slug}" class="text-gray-500">read more</a>
 						</div>
 					</div>
 				</div>
