@@ -1,18 +1,51 @@
 <script context="module">
-	
+	import { variables } from '$lib/variables';
+
 	export const prerender = true;
 
+	/**
+	 * @type {import('@sveltejs/kit').Load}
+	 */
+	export async function load({ fetch }) {
+		try {
+			const posts = (async () => {
+				const response = await fetch(variables.api + '/articles');
+
+				if (response.ok) {
+					return response.json();
+				} else {
+					console.log(response);
+					throw new Error('Error on fetching blog posts, check the logs.');
+				}
+			})();
+			const topics = (async () => {
+				const response = await fetch(variables.api + '/topics');
+
+				if (response.ok) {
+					return response.json();
+				} else {
+					console.log(response);
+					throw new Error('Error on fetching topics, check the logs.');
+				}
+			})();
+			return {
+				props: {
+					// posts: getPosts().map((post) => post.metadata)
+					posts: posts,
+					topics: topics
+				}
+			};
+		} catch (err) {
+			console.log(err);
+		}
+	}
 </script>
 
 <script>
-	import { onMount } from 'svelte';
-	import { variables } from '$lib/variables'
-
 	// filter posts by keyword either that by a user or by topics
 	var searched = 'example';
-	const search = () => {};
 
-	let blogPosts;
+	const search = () => {};
 
 	const months = [
 		'January',
@@ -29,23 +62,6 @@
 		'December'
 	];
 
-	onMount(async () => {
-		// const res = await fetch('https://jsonplaceholder.typicode.com/posts');
-		// blogPosts = await res.json();
-		// console.log(blogPosts[0]);
-	});
-
-	const fetchPosts = (async () => {
-		const response = await fetch(variables.api + '/articles');
-
-		if (response.ok) {
-			return response.json();
-		} else {
-			console.log(response);
-			throw new Error("Error on fetching blog posts, check the logs.");
-		}
-	})();
-
 	const formatDate = (date) => {
 		var d = new Date(date);
 
@@ -58,20 +74,18 @@
 		return `${month} ${day}, ${year}`;
 	};
 
-	const fetchTopics = (async () => {
-		const response = await fetch(variables.api + '/topics');
+	export let posts;
 
-		if (response.ok) {
-			return response.json();
-		} else {
-			console.log(response);
-			throw new Error("Error on fetching topics, check the logs.");
-		}
-	})();
+	export let topics;
 </script>
 
 <svelte:head>
-	<title>A blog for inspiring Back-End developers</title>
+	<title>Blog | Amine Amellouk</title>
+
+	<meta
+		name="description"
+		content="Tutorials and essays about programming, software, tech, system design mainly Back-End and Devops and also other topics"
+	/>
 </svelte:head>
 
 <section>
@@ -127,8 +141,9 @@
 			</a>
 		</div>
 		<div class="flex justify-center flex-wrap">
-			{#await fetchTopics}
-			<button class="badge mx-2 my-2">Loading</button>
+			<!-- {#await fetchTopics} -->
+			{#await topics}
+				<button class="badge mx-2 my-2">Loading</button>
 			{:then data}
 				{#each data as { name }}
 					<button class="badge mx-2 my-2">{name}</button>
@@ -149,7 +164,8 @@
 				<button class="absolute top-0 right-0 rounded-l-none btn" on:click={search}>go</button>
 			</div>
 		</div>
-		{#await fetchPosts}
+		<!-- {#await fetchPosts} -->
+		{#await posts}
 			<p>...waiting</p>
 		{:then data}
 			{#each [...data].reverse() as { id, title, topics, published_at, author, description, slug, image }}
@@ -160,11 +176,7 @@
 						{/each}
 					</div>
 					<figure class="flex">
-						<img
-							src={image.formats.medium.url}
-							alt="blog post"
-							class="w-full h-full"
-						/>
+						<img src={image.formats.medium.url} alt="blog post" class="w-full h-full" />
 					</figure>
 					<div class="card-body">
 						<div class="flex space-x-1">
@@ -176,7 +188,7 @@
 						<h2 class="card-title">{title}</h2>
 						<p>{description}</p>
 						<div class="card-actions">
-							<a sveltekit:prefetch href="/posts/{slug}" class="text-gray-500">read more</a>
+							<a sveltekit:prefetch href={`/posts/${slug}`} class="text-gray-500">read more</a>
 						</div>
 					</div>
 				</div>

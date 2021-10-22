@@ -1,17 +1,43 @@
 <script context="module">
-	export const prerender = true;
+	import { variables } from '$lib/variables';
+
+	/**
+	 * @type {import('@sveltejs/kit').Load}
+	 */
+	export async function load({ page: { params }, fetch }) {
+		const { slug } = params;
+		const post = (async () => {
+			const response = await fetch(variables.api + `/articles/${slug}`);
+
+			if (response.ok) {
+				return response.json();
+			} else {
+				console.log(response);
+				throw new Error('Error on fetching blog posts, check the logs.');
+			}
+		})();
+		if (!post) {
+			return {
+				status: 404,
+				error: 'Post not found'
+			};
+		}
+		return {
+			props: {
+				// ...post.metadata,
+				post: post,
+				url: 'https://blog.amineamellouk.com/posts/' + slug
+			}
+		};
+	}
 </script>
 
 <script>
-	import { page } from '$app/stores';
 	import marked from 'marked';
-	import { variables } from '$lib/variables'
 
 	let _md = marked;
 
-	var slug = $page.params.slug;
-
-	var url = 'https://blog.amineamellouk.com/posts/' + slug;
+	export let url;
 
 	const months = [
 		'January',
@@ -28,17 +54,6 @@
 		'December'
 	];
 
-	const fetchPost = (async () => {
-		const response = await fetch(variables.api + `/articles/${slug}`);
-
-		if (response.ok) {
-			return response.json();
-		} else {
-			console.log(response);
-			throw new Error('Error on fetching the post, check the logs.');
-		}
-	})();
-
 	const formatDate = (date) => {
 		var d = new Date(date);
 
@@ -51,21 +66,18 @@
 		return `${month} ${day}, ${year}`;
 	};
 
-	let markdown = '# Ree'
+	export let post;
 </script>
 
-<section>
+<article>
 	<div class="flex flex-col space-y-2 mt-10 mb-10">
-		{#await fetchPost}
+		<!-- {#await fetchPost} -->
+		{#await post}
 			<button class="badge mx-2 my-2">Loading</button>
 		{:then post}
 			<h1 class="text-4xl mb-10 font-bold mx-auto">{post.title}</h1>
 			<figure class="flex flex-col">
-				<img
-					src={post.image.formats.medium.url}
-					class="w-full"
-					alt="blog post"
-				/>
+				<img src={post.image.formats.medium.url} class="w-full" alt="blog post" />
 				<figcaption class="font-medium">
 					<div class="text-gray-500 text-center text-xs">{post.image_source}</div>
 				</figcaption>
@@ -162,10 +174,7 @@
 				<figure class="flex">
 					<div class="avatar m-auto">
 						<div class="mb-8 rounded-full w-24 h-24">
-							<img
-								src={post.author.picture.formats.small.url}
-								alt="author avatar"
-							/>
+							<img src={post.author.picture.formats.small.url} alt="author avatar" />
 						</div>
 					</div>
 				</figure>
@@ -227,4 +236,4 @@
 			<p>{error}</p>
 		{/await}
 	</div>
-</section>
+</article>
