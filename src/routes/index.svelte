@@ -8,6 +8,8 @@
 	 */
 	export async function load({ fetch }) {
 		try {
+			// const postsRes = await fetch(variables.api + '/articles');
+			// const topicsRes = await fetch(variables.api + '/topics');
 			const posts = (async () => {
 				const response = await fetch(variables.api + '/articles');
 
@@ -28,13 +30,27 @@
 					throw new Error('Error on fetching topics, check the logs.');
 				}
 			})();
+			// if (postsRes.ok && topicsRes.ok) {
+			// 	return {
+			// 		props: {
+			// 			// posts: getPosts().map((post) => post.metadata)
+			// 			posts: await postsRes.json(),
+			// 			topics: await topicsRes.json()
+			// 		}
+			// 	};
+			// }
+
+			// return {
+			// 	status: res.status,
+			// 	error: new Error(`Could not load ${url}`)
+			// };
 			return {
-				props: {
-					// posts: getPosts().map((post) => post.metadata)
-					posts: posts,
-					topics: topics
-				}
-			};
+					props: {
+						// posts: getPosts().map((post) => post.metadata)
+						posts: await posts,//await postsRes.json(),
+						topics: await topics//await topicsRes.json()
+					}
+				};
 		} catch (err) {
 			console.log(err);
 		}
@@ -189,6 +205,7 @@
 						<p>{description}</p>
 						<div class="card-actions">
 							<a sveltekit:prefetch href={`/posts/${slug}`} class="text-gray-500">read more</a>
+							<!-- <a href={`/posts/${slug}`} class="text-gray-500">read more</a> -->
 						</div>
 					</div>
 				</div>
