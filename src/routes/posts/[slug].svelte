@@ -64,7 +64,6 @@
 
 <article>
 	<div class="flex flex-col space-y-2 mt-10 mb-10">
-		<!-- {#await fetchPost} -->
 		{#await post}
 			<button class="badge mx-2 my-2">Loading</button>
 		{:then post}
