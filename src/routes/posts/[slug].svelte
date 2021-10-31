@@ -6,7 +6,6 @@
 	 */
 	export async function load({ page: { params }, fetch }) {
 		const { slug } = params;
-		// const response = await fetch(variables.api + `/articles/${slug}`);
 		const post = (async () => {
 			const response = await fetch(variables.api + `/articles/${slug}`);
 
@@ -17,23 +16,9 @@
 				throw new Error('Error on fetching blog posts, check the logs.');
 			}
 		})();
-		// if (response.ok) {
-		// 	return {
-		// 		props: {
-		// 			// ...post.metadata,
-		// 			post: await response.json(),
-		// 			url: 'https://blog.amineamellouk.com/posts/' + slug
-		// 		}
-		// 	};
-		// }
-		// return {
-		// 	status: res.status,
-		// 	error: new Error(`Could not load ${url}`)
-		// };
 		return {
 				props: {
-					// ...post.metadata,
-					post: await post,//await response.json(),
+					post: await post,
 					url: 'https://blog.amineamellouk.com/posts/' + slug
 				}
 			};

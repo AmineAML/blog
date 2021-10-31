@@ -56,10 +56,9 @@
 			</div>
 		</div>
 		<p class="space-y-2">
-			I'm a Software Developer who studied both coding and economics. <br />
-			I've started this blog to reignite a passion I had stopped doing since many years and one that
-			I've really enjoyed. <br />
-			Blogging is a sort of journaling and sharing knoweldge, documentation and also tutorials included
+			I'm a Software Developer who studied coding and economics. <br> <br>
+			I've started this blog to reignite a passion I had stopped doing since many years and one that I've really enjoyed. As a Software Developer, learning is part of the job, while we might retain that knowledge by heart, engineers are problem solvers that understand their craft. Thus as a good practice is bloging and writing documentation about what we have learned, it's not just an act of sharing and helping others, but also a highly recommended act we do as many of us got stuck later on the same issues and had to research again resulting in wasted time that could be spent updating what we've already done before and thus becoming effecient with our work!
+			<!-- Blogging is a sort of journaling and sharing knoweldge, documentation and also tutorials included
 			to give back to the tech community that was and still open and helpful in giving a hand, teaching
 			and mentoring people getting into this industry. <br />
 			Journaling about my learnings this blog is not just a tech blog and is diversified with a software
@@ -81,7 +80,7 @@
 			(spoken ones as well as computer's), history, philosphy, psychology and more hopefully with the
 			excitement to discover! <br />
 			I thank you for reading, hope to be useful and to connect with each other to learn software engineering
-			while also exploring other interests and endeavors!
+			while also exploring other interests and endeavors! -->
 		</p>
 	</div>
 </section>
